@@ -13,7 +13,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class Taller5 {
     public static void main(String[] args) { 
         SpringApplication app = new SpringApplication(Taller5.class); 
-        app.setDefaultProperties(Collections.singletonMap("server.port", "5000")); 
+        app.setDefaultProperties(Collections.singletonMap("server.port", getPort())); 
         app.run(args); 
+    }
+
+    static String getPort(){
+        String port = System.getenv("PORT");
+        if(port != null){
+            return port;
+        }
+        return "50001";
     }
 }
