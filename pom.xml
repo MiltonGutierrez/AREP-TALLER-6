@@ -8,14 +8,14 @@
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
     <groupId>edu.escuelaing.arep</groupId>
-    <artifactId>taller5</artifactId>
+    <artifactId>taller6</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <exec.mainClass>edu.escuelaing.arep.taller5.Taller5</exec.mainClass>
+        <exec.mainClass>edu.escuelaing.arep.taller6.Taller6</exec.mainClass>
     </properties>
     <dependencies>
     <dependency>
@@ -28,6 +28,17 @@
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+
+    <dependency>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
+			<scope>runtime</scope>
+		</dependency>
 
     <dependency>
 			<groupId>me.paulschwarz</groupId>
