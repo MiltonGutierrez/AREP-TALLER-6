@@ -14,6 +14,7 @@ import org.mockito.MockitoAnnotations;
 import edu.escuelaing.arep.taller6.exception.PropertyListingException;
 import edu.escuelaing.arep.taller6.model.Property;
 import edu.escuelaing.arep.taller6.repository.PropertyListingRepository;
+import edu.escuelaing.arep.taller6.services.impl.PropertyListingServicesImpl;
 
 class PropertyListingServicesImplTest {
 

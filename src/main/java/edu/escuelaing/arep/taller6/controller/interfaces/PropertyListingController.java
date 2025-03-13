@@ -1,4 +1,4 @@
-package edu.escuelaing.arep.taller6.controller;
+package edu.escuelaing.arep.taller6.controller.interfaces;
 
 
 import java.util.Map;

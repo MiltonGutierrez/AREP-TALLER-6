@@ -1,4 +1,4 @@
-package edu.escuelaing.arep.taller6.services;
+package edu.escuelaing.arep.taller6.services.interfaces;
 
 import java.util.List;
 import java.util.Map;

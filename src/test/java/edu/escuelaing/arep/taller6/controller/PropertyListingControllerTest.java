@@ -12,9 +12,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
 
+import edu.escuelaing.arep.taller6.controller.impl.PropertyListingControllerImpl;
 import edu.escuelaing.arep.taller6.exception.PropertyListingException;
 import edu.escuelaing.arep.taller6.model.Property;
-import edu.escuelaing.arep.taller6.services.PropertyListingServices;
+import edu.escuelaing.arep.taller6.services.interfaces.PropertyListingServices;
 
 class PropertyListingControllerImplTest {
 

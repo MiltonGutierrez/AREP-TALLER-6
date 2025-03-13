@@ -1,4 +1,4 @@
-package edu.escuelaing.arep.taller6.controller;
+package edu.escuelaing.arep.taller6.controller.impl;
 
 import java.util.List;
 import java.util.Map;
@@ -15,9 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import edu.escuelaing.arep.taller6.controller.interfaces.PropertyListingController;
 import edu.escuelaing.arep.taller6.exception.PropertyListingException;
 import edu.escuelaing.arep.taller6.model.Property;
-import edu.escuelaing.arep.taller6.services.PropertyListingServices;
+import edu.escuelaing.arep.taller6.services.interfaces.PropertyListingServices;
 
 @RestController
 @RequestMapping("/api")

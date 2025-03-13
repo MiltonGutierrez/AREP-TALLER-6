@@ -1,0 +1,142 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.update-form {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    width: 300px;
+    text-align: center;
+}
+
+.update-form input, .update-form textarea {
+    width: 100%;
+    margin: 5px 0;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.update-form button {
+    margin-top: 10px;
+    padding: 10px;
+    width: 100%;
+    border: none;
+    background-color: #28a745;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.update-form button:hover {
+    background-color: #218838;
+}
+
+
+/* Contenedor principal */
+.main-container {
+    display: flex;
+    gap: 20px; /* Espaciado entre los dos bloques */
+    justify-content: center;
+    flex-wrap: wrap; /* Para que sea responsive */
+}
+
+/* Estilo para cada caja */
+.container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    text-align: center;
+}
+
+/* Títulos */
+h1, h2 {
+    color: #333;
+}
+
+/* Formulario */
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+textarea {
+    resize: none;
+    height: 80px;
+}
+
+/* Estilo de los botones */
+button {
+    background-color: #28a745; /* Verde */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px 0;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background-color: #218838; /* Verde más oscuro */
+}
+
+/* Contenedor de búsqueda */
+#searchOptions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+#searchOptions button {
+    flex: 1;
+    min-width: 120px;
+}
+
+/* Campos de búsqueda */
+#searchFormContainer {
+    margin-top: 15px;
+    padding: 15px;
+    background-color: #f1f1f1;
+    border-radius: 8px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Botón de búsqueda */
+.search-button {
+    width: 100%;
+    margin-top: 10px;
+}

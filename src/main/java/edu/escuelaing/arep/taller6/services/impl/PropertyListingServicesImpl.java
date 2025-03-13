@@ -1,4 +1,4 @@
-package edu.escuelaing.arep.taller6.services;
+package edu.escuelaing.arep.taller6.services.impl;
 
 import java.util.List;
 import java.util.Map;
@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import edu.escuelaing.arep.taller6.exception.PropertyListingException;
 import edu.escuelaing.arep.taller6.model.Property;
 import edu.escuelaing.arep.taller6.repository.PropertyListingRepository;
+import edu.escuelaing.arep.taller6.services.interfaces.PropertyListingServices;
 
 
 @Service
