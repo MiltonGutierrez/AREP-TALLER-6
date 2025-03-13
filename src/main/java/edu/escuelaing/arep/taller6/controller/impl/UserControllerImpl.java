@@ -64,7 +64,7 @@ public class UserControllerImpl implements UserController {
 
     @Override
     @GetMapping("/{username}")
-    public ResponseEntity<Object> getUser(String username) {
+    public ResponseEntity<Object> getUser(@PathVariable String username) {
         try {
             User user = userService.getUser(username);
             return new ResponseEntity<>(user, HttpStatus.OK);
@@ -83,5 +83,4 @@ public class UserControllerImpl implements UserController {
             return new ResponseEntity<>(Map.of(ERROR_KEY, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
-
 }

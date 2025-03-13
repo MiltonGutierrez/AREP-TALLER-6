@@ -12,7 +12,7 @@ public interface PropertyListingController {
 
     ResponseEntity<Object> getProperties();
 
-    ResponseEntity<Object> updateProperty(Long id, Map<String, String> queryParams);
+    ResponseEntity<Object> updateProperty(Long id, Property property);
 
     ResponseEntity<Object> deleteProperty(Long id);
 

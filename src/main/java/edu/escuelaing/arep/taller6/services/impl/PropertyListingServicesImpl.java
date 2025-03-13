@@ -39,23 +39,23 @@ public class PropertyListingServicesImpl implements PropertyListingServices{
     }
 
     @Override
-    public Property updateProperty(Long id, Map<String, String> values) throws PropertyListingException {
+    public Property updateProperty(Long id, Property values) throws PropertyListingException {
         Property propertyInDB = getPropertyById(id);
         boolean updated = false;
-        if(values.get("address") != null){
-            propertyInDB.setAddress(values.get("address"));
+        if(values.getAddress() != null){
+            propertyInDB.setAddress(values.getAddress());
             updated = true;
         }
-        if(values.get("price") != null){
-            propertyInDB.setPrice(Double.valueOf(values.get("price")));
+        if(values.getPrice() != null){
+            propertyInDB.setPrice(values.getPrice());
             updated = true;
         }
-        if(values.get("size") != null){
-            propertyInDB.setSize(Double.valueOf(values.get("size")));
+        if(values.getSize() != null){
+            propertyInDB.setSize(values.getSize());
             updated = true;
         }
-        if(values.get("description") != null){
-            propertyInDB.setDescription(values.get("description"));
+        if(values.getDescription() != null){
+            propertyInDB.setDescription(values.getDescription());
             updated = true;
         }
         if(!updated){

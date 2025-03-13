@@ -82,11 +82,10 @@ public class PropertyListingControllerImpl implements PropertyListingController 
 
     @Override
     @PutMapping("/property/{id}")
-    public ResponseEntity<Object> updateProperty(@PathVariable Long id, @RequestBody Map<String, String> queryParams) {
-        Property property;
+    public ResponseEntity<Object> updateProperty(@PathVariable Long id, @RequestBody Property property) {
         try {
-            property = propertyListingService.updateProperty(id, queryParams);
-            return new ResponseEntity<>(property, HttpStatus.OK);
+            Property propertyUpdated = propertyListingService.updateProperty(id, property);
+            return new ResponseEntity<>(propertyUpdated, HttpStatus.OK);
         } catch (PropertyListingException e) {
             return new ResponseEntity<>(Map.of(ERROR_KEY, e.getMessage()), HttpStatus.BAD_REQUEST);
         }

@@ -68,23 +68,25 @@ class PropertyListingServicesImplTest {
         property.setId(1L);
         property.setAddress("Old Address");
 
-        Map<String, String> updates = new HashMap<>();
-        updates.put("address", "New Address");
+        Property propertyUpdate = new Property();
+        propertyUpdate.setAddress("New Address");
 
-        when(repository.findById(1L)).thenReturn(Optional.of(property)); // ✅ Fix: Wrap in Optional
+
+        when(repository.findById(1L)).thenReturn(Optional.of(property)); 
         when(repository.save(any(Property.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Property updatedProperty = service.updateProperty(1L, updates);
+        Property updatedProperty = service.updateProperty(1L, propertyUpdate);
+       
 
         assertEquals("New Address", updatedProperty.getAddress());
-        verify(repository, times(1)).save(any(Property.class)); // ✅ Ensure save() is called
+        verify(repository, times(1)).save(any(Property.class)); 
     }
 
     @Test
     void testUpdateProperty_NotFound() {
-        when(repository.findById(1L)).thenReturn(Optional.empty()); // ✅ Fix: Use Optional.empty()
+        when(repository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(PropertyListingException.class, () -> service.updateProperty(1L, new HashMap<>()));
+        assertThrows(PropertyListingException.class, () -> service.updateProperty(1L, new Property()));
 
         verify(repository, times(1)).findById(1L);
     }

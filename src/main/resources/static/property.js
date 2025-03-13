@@ -170,6 +170,9 @@ const property = (() => {
             let price = document.getElementById('updatePrice').value;
             let size = document.getElementById('updateSize').value;
             let description = document.getElementById('updateDescription').value;
+            if (!address && !price && !size && !description) {
+                throw new Error('At least one field is required');
+            }
 
             let body = JSON.stringify({
                 address: address,
