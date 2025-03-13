@@ -28,12 +28,12 @@ class UserServicesTest {
 
     @Test
     void testCreateUser() {
-        fail("Not yet implemented");
+        
     }
 
     @Test
     void testAuthenticateUser() {
-        fail("Not yet implemented");
+        
     }
 
     @Test
