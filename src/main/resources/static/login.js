@@ -4,27 +4,30 @@ const login = (() => {
     const createUser = async () => {
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
-        const body = JSON.stringify({ username: username, password: password });
         try {
-            let user = await api.createUser(body);
-            alert("User created successfully: ", user);
+            let user = await api.createUser(username, password);
+            console.log(user);
+            alert("User created successfully: " + JSON.stringify(user));
         } catch (error) {
-            alert("Error creating user: ", error);
+            console.error("Error creating user:", error);
+            alert("Error creating user: " + error.message);
         }
-    }
-
+    };
+    
     const authUser = async () => {
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
-        const body = JSON.stringify({ username: username, password: password });
         try {
-            let user = await api.login(body);
-            alert("User authenticated successfully: ", user);
+            let response = await api.login(username, password);
+            console.log(response);
+            alert("User authenticated successfully: " + response);
             window.location.href = "/app.html";
         } catch (error) {
-            alert("Error authenticating user: ", error);
+            console.error("Error authenticating user:", error);
+            alert("Error authenticating user: " + error.message);
         }
-    }
+    };
+    
 
     return {
         createUser,

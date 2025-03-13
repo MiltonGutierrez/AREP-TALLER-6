@@ -3,6 +3,7 @@ package edu.escuelaing.arep.taller6.services.impl;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,5 +54,26 @@ public class UserServiceImpl implements UserServices {
         }
         byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
         return new String(Hex.encode(hash));
+    }
+
+    @Override
+    public List<User> getUsers(){
+        return (List<User>) userRepository.findAll();
+    }
+
+    @Override
+    public User deleteUser(String username) throws UserException {
+        User userInDB = getUser(username);
+        userRepository.delete(userInDB);
+        return userInDB;    
+    }
+
+    @Override
+    public User getUser(String username) throws UserException {
+        Optional<User> userInDB = userRepository.findById(username);
+        if(userInDB.isEmpty()){
+            throw new UserException(UserException.USER_NOT_FOUND);
+        }
+        return userInDB.get();
     }
 }

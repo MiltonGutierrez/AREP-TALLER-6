@@ -75,7 +75,7 @@ class UserControllerTest {
 
         ResponseEntity<Object> response = userController.loginUser(username, password);
 
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("Login succesful", response.getBody());
     }
 
