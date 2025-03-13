@@ -7,12 +7,14 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.codec.Hex;
+import org.springframework.stereotype.Service;
 
 import edu.escuelaing.arep.taller6.exception.UserException;
 import edu.escuelaing.arep.taller6.model.User;
 import edu.escuelaing.arep.taller6.repository.UserRepository;
 import edu.escuelaing.arep.taller6.services.interfaces.UserServices;
 
+@Service
 public class UserServiceImpl implements UserServices {
 
     private UserRepository userRepository;

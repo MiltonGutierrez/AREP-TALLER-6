@@ -70,7 +70,7 @@ class PropertyListingControllerImplTest {
     void testCreateProperty_Success() throws PropertyListingException {
         Property property = new Property();
         
-        // Simular que el método createProperty se ejecuta sin lanzar excepciones
+        
         doReturn(property).when(service).createProperty(any(Property.class));
     
         ResponseEntity<Object> response = controller.createProperty(property);

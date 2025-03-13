@@ -18,7 +18,6 @@ public class PropertyListingServicesImpl implements PropertyListingServices{
 
     private PropertyListingRepository repository;
 
-
     @Autowired
     public PropertyListingServicesImpl(PropertyListingRepository repository){
         this.repository = repository;

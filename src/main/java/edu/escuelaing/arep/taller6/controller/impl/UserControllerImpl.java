@@ -5,8 +5,11 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.escuelaing.arep.taller6.controller.interfaces.UserController;
@@ -16,19 +19,20 @@ import edu.escuelaing.arep.taller6.services.interfaces.UserServices;
 
 @RestController
 @RequestMapping("/user")
-public class UserServiceImpl implements UserController {
+@CrossOrigin("*")
+public class UserControllerImpl implements UserController {
 
     private UserServices userService;
     private static final String ERROR_KEY = "error";
 
     @Autowired
-    public UserServiceImpl(UserServices userService) {
+    public UserControllerImpl(UserServices userService) {
         this.userService = userService;
     }
 
     @Override
-    @PostMapping("/")
-    public ResponseEntity<Object> createUser(String username, String password) {
+    @PostMapping()
+    public ResponseEntity<Object> createUser(@RequestParam String username, @RequestParam String password) {
         try {
             User userCreated = userService.createUser(username, password);
             return new ResponseEntity<>(userCreated, HttpStatus.CREATED);
@@ -39,7 +43,7 @@ public class UserServiceImpl implements UserController {
 
     @Override
     @PostMapping("/login")
-    public ResponseEntity<Object> loginUser(String username, String password) {
+    public ResponseEntity<Object> loginUser(@RequestParam String username, @RequestParam String password) {
         try {
             userService.authenticateUser(username, password);
             return new ResponseEntity<>("Login succesful", HttpStatus.CREATED);
