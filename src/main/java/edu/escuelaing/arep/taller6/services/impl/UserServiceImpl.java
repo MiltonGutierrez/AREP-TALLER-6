@@ -1,8 +1,12 @@
 package edu.escuelaing.arep.taller6.services.impl;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.codec.Hex;
 
 import edu.escuelaing.arep.taller6.exception.UserException;
 import edu.escuelaing.arep.taller6.model.User;
@@ -38,8 +42,15 @@ public class UserServiceImpl implements UserServices {
     }
 
     @Override
-    public String hashPasword(String password) {
-        return password;
+    public String hashPasword(String password) throws UserException {
+        MessageDigest digest;
+        try {
+            digest = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) {
+            throw new UserException(UserException.SHA_256_ALGORITHM_NOT_FOUND);
+        }
+        byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
+        return new String(Hex.encode(hash));
     }
     
 }

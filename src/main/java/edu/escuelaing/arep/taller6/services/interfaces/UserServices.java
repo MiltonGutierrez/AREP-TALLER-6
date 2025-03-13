@@ -7,5 +7,5 @@ public interface UserServices {
     
     User createUser(String username, String password) throws UserException; 
     void authenticateUser(String username, String password) throws UserException;
-    String hashPasword(String password);    
+    String hashPasword(String password) throws UserException;    
 }
