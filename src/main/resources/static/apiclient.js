@@ -1,5 +1,6 @@
 const apiClient = (() => {
     const url = "/api/";
+    const urlUser = "/user";
 
     // GET
     const getProperties = async () => {
@@ -32,6 +33,24 @@ const apiClient = (() => {
         return response.json();
     };
 
+    const createUser = async (body) => {
+        const response = await fetch(urlUser, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: body
+        });
+        return response.json();
+    };
+
+    const login = async (body) => {
+        const response = await fetch(urlUser + '/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: body
+        });
+        return response.json();
+    }
+
     // PUT
     const updateProperty = async (id, body) => {
         const response = await fetch(url + `property/${id}`, {
@@ -54,6 +73,8 @@ const apiClient = (() => {
         getPropertiesByPriceRange,
         getPropertiesBySizeRange,
         createProperty,
+        createUser,
+        login,
         updateProperty,
         deleteProperty
     };

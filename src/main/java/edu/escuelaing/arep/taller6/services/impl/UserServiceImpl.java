@@ -16,7 +16,6 @@ import edu.escuelaing.arep.taller6.services.interfaces.UserServices;
 public class UserServiceImpl implements UserServices {
 
     private UserRepository userRepository;
-    private static final String SHA256_PATTERN = "^[a-fA-F0-9]{64}$";
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository) {
@@ -44,9 +43,6 @@ public class UserServiceImpl implements UserServices {
 
     @Override
     public String hashPasword(String password) throws UserException {
-        if(isAlreadyHashed(password)){
-            return password;
-        }
         MessageDigest digest;
         try {
             digest = MessageDigest.getInstance("SHA-256");
@@ -56,9 +52,4 @@ public class UserServiceImpl implements UserServices {
         byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
         return new String(Hex.encode(hash));
     }
-
-    private boolean isAlreadyHashed(String input) {
-        return input.matches(SHA256_PATTERN);
-    }
-    
 }
