@@ -53,6 +53,11 @@ Se pushea la imagen:
    ```
 ![image](https://github.com/user-attachments/assets/5b954aab-ea19-42ae-bd4e-014ccd74e908)
 
+### En la instancia EC2 con la DB
+Para este punto ya se asume que se realizo las configuraciones e intalaciones para la base de datos. (En nuestro caso de mysql) Por lo que solo es necesario iniciar el contenedor Docker con la base de datos.
+
+![image](https://github.com/user-attachments/assets/58db1a15-b5e5-4bb6-8b58-a71fc7a2af14)
+
 ### En la instancia EC2 designada para el back
 
 Creamos el .env donde se almacenaran los siguientes valores: DB_URL, DB_USERNAME, DB_PASSWORD y KEYSTORE_PASSWORD
@@ -70,6 +75,7 @@ Para probar su correcto funcionamiento (Certificado válido)
 ![image](https://github.com/user-attachments/assets/57392aab-9cc8-404c-b916-172028eecc9d)
 
 
+### Creación y configuración del WebServer
 
 
 
