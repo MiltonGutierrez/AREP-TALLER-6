@@ -19,14 +19,43 @@ El taller se centra en diseñar y desplegar una aplicación segura y escalable u
 - Tener una conexion a una DB MySql ya configurada (preferiblemente en una instancia EC2)
 - Abrir puertos necesarios para las instancias EC2 (443, 22, y demás)
 
-### Instalando
+### Obtención certificado con Duck DNS
+Primero se crean las instancias EC2 para el back y el front, con las ips publicas creamos dominios con el uso de duck dns.
+![image](https://github.com/user-attachments/assets/5043b7dc-da92-4ec1-a428-e8a553e9f93b)
 
+### Certificado para el servicio back-end (Spring)
 
-1. Clona el repositorio del proyecto:
+Accede a la instancia (ya sea desde la consola o con la llave privada).
 
+Intala las dependencias necesarias:
    ```bash
-   git clone https://github.com/MiltonGutierrez/AREP-TALLER-6.git
-   cd AREP-TALLER-6
+   sudo yum install epel-release -y
+   ```
+   ```bash
+   sudo yum install certbot python3-certbot-apache -y
+   ```
+   ```bash
+   sudo certbot certonly --standalone -d tudominio.duckdns.org
+   ```
+Una vez generado el certificado para el dominio con los archivos generados `fullchain.pem` y `privkey.pem` se creara el keystore.p12 con el siguiente comando:
+   ```bash
+   sudo openssl pkcs12 -export \
+   -in /etc/letsencrypt/live/tudominio.duckdns.org/fullchain.pem \
+   -inkey /etc/letsencrypt/live/tudominio.duckdns.org/privkey.pem \
+   -out /ruta/donde/guardar/keystore.p12 \
+   -name "tudominio" \
+   -CAfile /etc/letsencrypt/live/tudominio.duckdns.org/chain.pem \
+   -caname "Let's Encrypt
+   ```
+Ahora se debe descargar el archivo y moverlo al directorio `src/main/resources/keystore` de nuestro proyecto. Adicionalmente se debe configurar el archivo application.properties:
+   ```yml
+   sudo openssl pkcs12 -export \
+   -in /etc/letsencrypt/live/tudominio.duckdns.org/fullchain.pem \
+   -inkey /etc/letsencrypt/live/tudominio.duckdns.org/privkey.pem \
+   -out /ruta/donde/guardar/keystore.p12 \
+   -name "tudominio" \
+   -CAfile /etc/letsencrypt/live/tudominio.duckdns.org/chain.pem \
+   -caname "Let's Encrypt
    ```
 
 ### Creacion de imagenes de docker
@@ -77,6 +106,7 @@ Para probar su correcto funcionamiento (Certificado válido)
 
 ### Creación y configuración del WebServer
 
+Se crea una instancia EC2 teniendo en cuenta que se deben abrir los puertos 22, 80 y 443 para su correcto funcionamiento. 
 
 
 ## Arquitectura
