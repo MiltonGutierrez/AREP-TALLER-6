@@ -25,9 +25,9 @@ Primero se crean las instancias EC2 para el back y el front, con las ips publica
 
 ### Certificado para el servicio back-end (Spring)
 
-Accede a la instancia (ya sea desde la consola o con la llave privada).
+1. Accede a la instancia (ya sea desde la consola o con la llave privada).
 
-Intala las dependencias necesarias:
+2. Intala las dependencias necesarias:
    ```bash
    sudo yum install epel-release -y
    ```
@@ -37,26 +37,70 @@ Intala las dependencias necesarias:
    ```bash
    sudo certbot certonly --standalone -d tudominio.duckdns.org
    ```
-Una vez generado el certificado para el dominio con los archivos generados `fullchain.pem` y `privkey.pem` se creara el keystore.p12 con el siguiente comando:
+3. Una vez generado el certificado para el dominio con los archivos generados `fullchain.pem` y `privkey.pem` se creara el ecikeystore.p12 con el siguiente comando:
    ```bash
    sudo openssl pkcs12 -export \
    -in /etc/letsencrypt/live/tudominio.duckdns.org/fullchain.pem \
    -inkey /etc/letsencrypt/live/tudominio.duckdns.org/privkey.pem \
-   -out /ruta/donde/guardar/keystore.p12 \
+   -out /ruta/donde/guardar/ecikeystore.p12 \
    -name "tudominio" \
    -CAfile /etc/letsencrypt/live/tudominio.duckdns.org/chain.pem \
    -caname "Let's Encrypt
    ```
-Ahora se debe descargar el archivo y moverlo al directorio `src/main/resources/keystore` de nuestro proyecto. Adicionalmente se debe configurar el archivo application.properties:
+4. Ahora se debe descargar el archivo y moverlo al directorio `src/main/resources/keystore` de nuestro proyecto. Adicionalmente se debe configurar el archivo application.properties:
+
+   ```bash
+   scp -i "/ruta/llaveprivada/key.pem" usuarioEC2@ip_instancia_ec2:/ruta/llave "/ruta/destino"
+   ```
+
    ```yml
-   sudo openssl pkcs12 -export \
-   -in /etc/letsencrypt/live/tudominio.duckdns.org/fullchain.pem \
-   -inkey /etc/letsencrypt/live/tudominio.duckdns.org/privkey.pem \
-   -out /ruta/donde/guardar/keystore.p12 \
-   -name "tudominio" \
-   -CAfile /etc/letsencrypt/live/tudominio.duckdns.org/chain.pem \
-   -caname "Let's Encrypt
+   # The format used for the keystore. It could be set to JKS in case it is a JKS file 
+   server.ssl.key-store-type=PKCS12
+   # The path to the keystore containing the certificate 
+   server.ssl.key-store=classpath:keystore/keystore.p12
+   # The password used to generate the certificate 
+   server.ssl.key-store-password=${KEYSTORE_PASSWORD}
+   # The alias mapped to the certificate 
+   server.ssl.key-alias=arep-taller-6
+   server.ssl.enabled=true
    ```
+### Certificado para el servicio front-end (Apache)
+
+1. Accede a la instancia (ya sea desde la consola o con la llave privada).
+
+2. Intala las dependencias necesarias:
+   ```bash
+   sudo yum update -y
+   ```
+   ```bash
+   sudo yum install httpd -y
+   ```
+   ```bash
+   sudo systemctl start httpd
+   ```
+   ```bash
+   sudo systemctl enable httpd
+   ```
+3. Se procede a mover los archivos estaticos (HTML-JS-CSS) a la instancia EC2.
+   ```bash
+   cd /ruta/archivos_estaticos
+   scp -i "/ruta/llave_privada" *.html *.css *.js usuario_instanciar@ip_instancia:/ruta_destino
+   ```
+4. Se mueven los archivos estaticos a la carpeta /var/www/html.
+   ```bash
+   sudo mv *.html /var/www/html
+   sudo mv *.css /var/www/html
+   sudo mv *.js /var/www/html
+   ```
+![image](https://github.com/user-attachments/assets/c424ab1e-2529-492b-869c-479a777fae40)
+5. Activamos SSL para el servicio de Apache
+   ```bash
+   sudo yum install mod_ssl -y
+   sudo systemctl restart httpd
+   ```
+
+
+Ya con las llaves privadas es suficiente para poder realizar la configuración.
 
 ### Creacion de imagenes de docker
 
@@ -106,7 +150,19 @@ Para probar su correcto funcionamiento (Certificado válido)
 
 ### Creación y configuración del WebServer
 
-Se crea una instancia EC2 teniendo en cuenta que se deben abrir los puertos 22, 80 y 443 para su correcto funcionamiento. 
+En la instancia EC2 destinada para el servicio front-end.
+
+Se intalan las dependencias necesarias: 
+   ```bash
+   sudo yum install httpd -y
+   ```
+   ```bash
+   sudo systemctl start httpd
+   ```
+   ```bash
+   sudo systemctl enable httpd
+   ```
+
 
 
 ## Arquitectura
