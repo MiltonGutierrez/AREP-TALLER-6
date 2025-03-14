@@ -1,4 +1,4 @@
-package edu.escuelaing.arep.taller6.services;
+package edu.escuelaing.arep.taller6.services.impl;
 
 import java.util.List;
 import java.util.Map;
@@ -10,13 +10,13 @@ import org.springframework.stereotype.Service;
 import edu.escuelaing.arep.taller6.exception.PropertyListingException;
 import edu.escuelaing.arep.taller6.model.Property;
 import edu.escuelaing.arep.taller6.repository.PropertyListingRepository;
+import edu.escuelaing.arep.taller6.services.interfaces.PropertyListingServices;
 
 
 @Service
 public class PropertyListingServicesImpl implements PropertyListingServices{
 
     private PropertyListingRepository repository;
-
 
     @Autowired
     public PropertyListingServicesImpl(PropertyListingRepository repository){
@@ -39,23 +39,23 @@ public class PropertyListingServicesImpl implements PropertyListingServices{
     }
 
     @Override
-    public Property updateProperty(Long id, Map<String, String> values) throws PropertyListingException {
+    public Property updateProperty(Long id, Property values) throws PropertyListingException {
         Property propertyInDB = getPropertyById(id);
         boolean updated = false;
-        if(values.get("address") != null){
-            propertyInDB.setAddress(values.get("address"));
+        if(values.getAddress() != null){
+            propertyInDB.setAddress(values.getAddress());
             updated = true;
         }
-        if(values.get("price") != null){
-            propertyInDB.setPrice(Double.valueOf(values.get("price")));
+        if(values.getPrice() != null){
+            propertyInDB.setPrice(values.getPrice());
             updated = true;
         }
-        if(values.get("size") != null){
-            propertyInDB.setSize(Double.valueOf(values.get("size")));
+        if(values.getSize() != null){
+            propertyInDB.setSize(values.getSize());
             updated = true;
         }
-        if(values.get("description") != null){
-            propertyInDB.setDescription(values.get("description"));
+        if(values.getDescription() != null){
+            propertyInDB.setDescription(values.getDescription());
             updated = true;
         }
         if(!updated){

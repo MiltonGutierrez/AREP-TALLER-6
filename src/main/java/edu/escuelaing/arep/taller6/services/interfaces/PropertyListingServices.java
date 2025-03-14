@@ -1,4 +1,4 @@
-package edu.escuelaing.arep.taller6.services;
+package edu.escuelaing.arep.taller6.services.interfaces;
 
 import java.util.List;
 import java.util.Map;
@@ -16,7 +16,7 @@ public interface PropertyListingServices {
 
     Property getPropertyById(Long id) throws PropertyListingException;
 
-    Property updateProperty(Long id, Map<String, String> queryParams) throws PropertyListingException;
+    Property updateProperty(Long id, Property property) throws PropertyListingException;
 
     Property deleteProperty(Long id) throws PropertyListingException;
 

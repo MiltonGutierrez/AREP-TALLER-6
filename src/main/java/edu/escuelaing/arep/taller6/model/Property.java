@@ -13,14 +13,14 @@ public class Property {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String address;
-    private double price;
-    private double size;
+    private Double price;
+    private Double size;
     private String description;
 
     public Property() {
     }
 
-    public Property(String address, double price, double size, String description) {
+    public Property(String address, Double price, Double size, String description) {
         this.address = address;
         this.price = price;
         this.size = size;
@@ -35,19 +35,19 @@ public class Property {
         this.address = address;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
-    public double getSize() {
+    public Double getSize() {
         return size;
     }
 
-    public void setSize(double size) {
+    public void setSize(Double size) {
         this.size = size;
     }
 

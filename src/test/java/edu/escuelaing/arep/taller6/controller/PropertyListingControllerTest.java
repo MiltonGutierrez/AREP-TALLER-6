@@ -12,9 +12,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
 
+import edu.escuelaing.arep.taller6.controller.impl.PropertyListingControllerImpl;
 import edu.escuelaing.arep.taller6.exception.PropertyListingException;
 import edu.escuelaing.arep.taller6.model.Property;
-import edu.escuelaing.arep.taller6.services.PropertyListingServices;
+import edu.escuelaing.arep.taller6.services.interfaces.PropertyListingServices;
 
 class PropertyListingControllerImplTest {
 
@@ -69,7 +70,7 @@ class PropertyListingControllerImplTest {
     void testCreateProperty_Success() throws PropertyListingException {
         Property property = new Property();
         
-        // Simular que el método createProperty se ejecuta sin lanzar excepciones
+        
         doReturn(property).when(service).createProperty(any(Property.class));
     
         ResponseEntity<Object> response = controller.createProperty(property);
@@ -96,26 +97,26 @@ class PropertyListingControllerImplTest {
     void testUpdateProperty_Success() throws PropertyListingException {
         Property property = new Property();
         property.setAddress("Updated Address");
-        Map<String, String> updates = Map.of("address", "Updated Address");
-        when(service.updateProperty(1L, updates)).thenReturn(property);
+        when(service.updateProperty(1L, property)).thenReturn(property);
 
-        ResponseEntity<Object> response = controller.updateProperty(1L, updates);
+        ResponseEntity<Object> response = controller.updateProperty(1L, property);
 
         assertEquals(200, response.getStatusCode().value());
         assertEquals(property, response.getBody());
-        verify(service, times(1)).updateProperty(1L, updates);
+        verify(service, times(1)).updateProperty(1L, property);
     }
 
     @Test
     void testUpdateProperty_NotFound() throws PropertyListingException {
-        Map<String, String> updates = Map.of("address", "Updated Address");
-        when(service.updateProperty(1L, updates)).thenThrow(new PropertyListingException("Property not found"));
+        Property property = new Property();
+        property.setAddress("Updated Address");
+        when(service.updateProperty(1L, property)).thenThrow(new PropertyListingException("Property not found"));
 
-        ResponseEntity<Object> response = controller.updateProperty(1L, updates);
+        ResponseEntity<Object> response = controller.updateProperty(1L, property);
 
         assertEquals(400, response.getStatusCode().value());
         assertTrue(((Map<?, ?>) response.getBody()).containsKey("error"));
-        verify(service, times(1)).updateProperty(1L, updates);
+        verify(service, times(1)).updateProperty(1L, property);
     }
 
     @Test

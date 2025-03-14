@@ -1,4 +1,4 @@
-package edu.escuelaing.arep.taller6.controller;
+package edu.escuelaing.arep.taller6.controller.impl;
 
 import java.util.List;
 import java.util.Map;
@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,12 +16,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import edu.escuelaing.arep.taller6.controller.interfaces.PropertyListingController;
 import edu.escuelaing.arep.taller6.exception.PropertyListingException;
 import edu.escuelaing.arep.taller6.model.Property;
-import edu.escuelaing.arep.taller6.services.PropertyListingServices;
+import edu.escuelaing.arep.taller6.services.interfaces.PropertyListingServices;
 
 @RestController
 @RequestMapping("/api")
+@CrossOrigin("*")
 public class PropertyListingControllerImpl implements PropertyListingController {
 
     private static final String ERROR_KEY = "error";
@@ -79,11 +82,10 @@ public class PropertyListingControllerImpl implements PropertyListingController 
 
     @Override
     @PutMapping("/property/{id}")
-    public ResponseEntity<Object> updateProperty(@PathVariable Long id, @RequestBody Map<String, String> queryParams) {
-        Property property;
+    public ResponseEntity<Object> updateProperty(@PathVariable Long id, @RequestBody Property property) {
         try {
-            property = propertyListingService.updateProperty(id, queryParams);
-            return new ResponseEntity<>(property, HttpStatus.OK);
+            Property propertyUpdated = propertyListingService.updateProperty(id, property);
+            return new ResponseEntity<>(propertyUpdated, HttpStatus.OK);
         } catch (PropertyListingException e) {
             return new ResponseEntity<>(Map.of(ERROR_KEY, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
