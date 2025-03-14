@@ -1,0 +1,171 @@
+### Escuela Colombiana de Ingeniería
+
+### Arquitectura Empresarial - AREP
+
+#  TALLER SECURE APPLICATION DESIGN
+
+El taller se centra en diseñar y desplegar una aplicación segura y escalable utilizando la infraestructura de AWS. Cuenta con dos servidores principales: un servidor Apache para servir un cliente HTML+JavaScript seguro a través de TLS, y un servidor Spring para los servicios backend con APIs RESTful, también aseguradas por TLS. Las principales características de seguridad incluyen cifrado TLS, optimización del cliente asincrónico, seguridad en el inicio de sesión con contraseñas almacenadas como hashes, y el despliegue en AWS para garantizar la fiabilidad.
+
+
+## Despliegue
+
+
+### Prerequisitos
+
+- Java 17 preferiblemente.
+- Maven 3.x
+- Acceso a una terminal.
+- Cuenta con creditos en AWS.
+- Tener una conexion a una DB MySql ya configurada (preferiblemente en una instancia EC2)
+
+### Instalando
+
+
+1. Clona el repositorio del proyecto:
+
+   ```bash
+   git clone https://github.com/MiltonGutierrez/AREP-TALLER-6.git
+   cd AREP-TALLER-6
+   ```
+
+### Creacion de imagenes de docker
+
+Para poder crear una imagen Docker se ejecuta el siguiente comando:
+   ```bash
+   docker build --tag arep6 .
+   ```
+![image](https://github.com/user-attachments/assets/894c754a-b2e2-4f88-835f-d3e80a65047b)
+
+Luego se crea referencia a la imagen creada para poder subirla a docker hub.
+   ```bash
+   docker build --tag arep6 nombre_usuario_docker/arep-6-back
+   ```
+![image](https://github.com/user-attachments/assets/11ca9a94-6b9e-440b-8e59-41809eb6fa33)
+
+Se inicia sesión.
+   ```bash
+   docker login
+   ```
+Se pushea la imagen:
+   ```bash
+   docker push nombre_usuario_docker/arep-6-back:latest
+   ```
+![image](https://github.com/user-attachments/assets/5b954aab-ea19-42ae-bd4e-014ccd74e908)
+
+### En la instancia EC2 designada para el back
+
+
+
+
+## Arquitectura
+
+
+### Diagrama de despliegue
+
+El siguiente diagrama de despliegue describe la estructura básica de la aplicación.
+
+![Deployment](https://github.com/user-attachments/assets/b6b85b9a-a19e-4865-b59b-927f113c37f3)
+
+### Descripción del Diagrama de Despliegue
+
+#### 1. **WebClient**
+   - **Puerto 8087**: Punto de entrada para las solicitudes HTTP desde el navegador.
+
+#### 2. **EC2 INSTANCE (Aplicación en Contenedor Docker)**
+   - **FrontEnd**: Se encarga de la interfaz de usuario y la comunicación con el backend.
+   - **BackEnd**: Procesa las peticiones del frontend, maneja la lógica de negocio y se comunica con la base de datos.
+
+#### 3. **EC2 INSTANCE (Base de Datos MySQL en Contenedor Docker)**
+   - **DockerContainer con MySQLDB**: Contenedor que aloja la base de datos MySQL para almacenamiento y consulta de datos.
+   - **Puerto 3307**: Comunicación entre el backend y la base de datos MySQL.
+
+---
+
+### **Flujo de la Aplicación**
+1. El **navegador** del usuario (WebClient) envía solicitudes HTTP al backend a través del puerto **8087**.
+2. El **FrontEnd** procesa la solicitud y, si es necesario, la envía al **BackEnd** dentro de la instancia EC2.
+3. El **BackEnd** maneja la lógica de negocio y, si requiere acceso a datos, consulta la base de datos **MySQL** a través del puerto **3307**.
+4. La base de datos MySQL devuelve la información solicitada al **BackEnd**, que la procesa y envía una respuesta al **FrontEnd**.
+5. El **FrontEnd** actualiza la interfaz del usuario con la respuesta obtenida.
+
+---
+
+
+### Diagrama de componentes.
+El siguiente diagrama de despliegue describe la estructura básica de la aplicación. Utilizando el patron MVC.
+
+![Component](https://github.com/user-attachments/assets/6816960c-15e7-4796-b67a-998d52b7f844)
+
+
+### 1. **WebClient**
+   - **Browser**: Punto de entrada de la aplicación, donde los usuarios interactúan con la interfaz.
+   - **Spring**: Enlace entre el navegador y la aplicación, que maneja las solicitudes HTTP.
+
+### 2. **App**
+   - Contiene los componentes del **FrontEnd** y **BackEnd**.
+
+#### **FrontEnd**
+   - **Html**: Archivos HTML que estructuran la interfaz de usuario.
+   - **Js**: Archivos JavaScript que proporcionan interactividad y comunicación con el backend.
+
+#### #**BackEnd**
+   - **Model**: Define la estructura de datos utilizada en la aplicación.
+   - **Service**: Implementa la lógica de negocio y orquesta la interacción con los repositorios.
+   - **Controller**: Gestiona las solicitudes HTTP y delega el procesamiento a los servicios.
+   - **Repository**: Componente que interactúa con la base de datos.
+   - **JPARepository**: Implementación de acceso a datos que utiliza JPA para comunicarse con la base de datos.
+
+### 3. **Base de Datos**
+   - **MySqlDb**: Sistema de almacenamiento de datos utilizado por la aplicación.
+
+---
+
+## **Flujo de la Aplicación**
+1. El **navegador** envía solicitudes a través de **Spring** al backend.
+2. El **Controller** recibe la solicitud y la pasa a los **Services**.
+3. Los **Services** interactúan con el **Repository** para acceder a los datos.
+4. El **Repository** utiliza **JPARepository** para realizar consultas en la base de datos **MySqlDb**.
+5. Los datos recuperados se devuelven al **Controller**, que genera una respuesta para el **FrontEnd**.
+6. El **FrontEnd** muestra los datos en la interfaz utilizando **Html** y **Js**.
+
+---
+
+
+### Funcionamiento.
+
+
+
+https://github.com/user-attachments/assets/36d71a5a-f8b8-492a-9741-48147fdb710c
+
+
+
+
+# Tecnologías Usadas en Pruebas
+- **JUnit Jupiter 5:** Para pruebas unitarias y parametrizadas.
+- **Mockito:** Para pruebas unitarias sobre los componentes Controller y Service
+- **Maven:** Gestión de dependencias y ejecución de pruebas.
+
+- **Resultado de las pruebas**
+
+Para correr las pruebas automatizadas utilize el comando **IMPORTANTE: Debe configurar las variables de entorno necesarias para realizar la conexión a la DB, de lo contrario habrán pruebas que fallen**.
+
+
+```bash
+   mvn clean test
+```
+
+![image](https://github.com/user-attachments/assets/10d04c55-0ac5-447e-ad60-61aa2384a98f)
+
+
+
+## Construido con.
+
+- [Maven](https://maven.apache.org/) - Dependency Management
+
+## Autores
+
+- **Milton Andres Gutierrez Lopez** - *Initial work* - [MiltonGutierrez](https://github.com/MiltonGutierrez)
+
+## Licencia
+
+Este proyecto está licenciado bajo la Licencia GNU - mira el archivo [LICENSE.md](LICENSE.md) para más detalles.
