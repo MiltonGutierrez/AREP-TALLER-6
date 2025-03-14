@@ -7,10 +7,10 @@
 El taller se centra en diseñar y desplegar una aplicación segura y escalable utilizando la infraestructura de AWS. Cuenta con dos servidores principales: un servidor Apache para servir un cliente HTML+JavaScript seguro a través de TLS, y un servidor Spring para los servicios backend con APIs RESTful, también aseguradas por TLS. Las principales características de seguridad incluyen cifrado TLS, optimización del cliente asincrónico, seguridad en el inicio de sesión con contraseñas almacenadas como hashes, y el despliegue en AWS para garantizar la fiabilidad.
 
 
-## Despliegue
+# Despliegue
 
 
-### Prerequisitos
+## Prerequisitos
 
 - Java 17 preferiblemente.
 - Maven 3.x
@@ -19,11 +19,11 @@ El taller se centra en diseñar y desplegar una aplicación segura y escalable u
 - Tener una conexion a una DB MySql ya configurada (preferiblemente en una instancia EC2)
 - Abrir puertos necesarios para las instancias EC2 (443, 22, y demás)
 
-### Obtención certificado con Duck DNS
+## Obtención certificado con Duck DNS
 Primero se crean las instancias EC2 para el back y el front, con las ips publicas creamos dominios con el uso de duck dns.
 ![image](https://github.com/user-attachments/assets/5043b7dc-da92-4ec1-a428-e8a553e9f93b)
 
-### Certificado para el servicio back-end (Spring)
+## Certificado para el servicio back-end (Spring)
 
 1. Accede a la instancia (ya sea desde la consola o con la llave privada).
 
@@ -64,7 +64,7 @@ Primero se crean las instancias EC2 para el back y el front, con las ips publica
    server.ssl.key-alias=arep-taller-6
    server.ssl.enabled=true
    ```
-### Certificado para el servicio front-end (Apache)
+## Certificado para el servicio front-end (Apache)
 
 1. Accede a la instancia (ya sea desde la consola o con la llave privada).
 
@@ -95,7 +95,7 @@ Primero se crean las instancias EC2 para el back y el front, con las ips publica
 ![image](https://github.com/user-attachments/assets/6985fb29-564f-4610-bc31-178de2e19414)
 
 
-### Creacion de imagenes de docker
+## Creacion de imagenes de docker
 
 1. Para poder crear una imagen Docker se ejecuta el siguiente comando:
    ```bash
@@ -119,7 +119,7 @@ Primero se crean las instancias EC2 para el back y el front, con las ips publica
    ```
 ![image](https://github.com/user-attachments/assets/5b954aab-ea19-42ae-bd4e-014ccd74e908)
 
-### En la instancia EC2 con la DB
+## En la instancia EC2 con la DB
 Para este punto ya se asume que se realizo las configuraciones e intalaciones para la base de datos. (En nuestro caso de mysql) Por lo que solo es necesario iniciar el contenedor Docker con la base de datos.
 
 ![image](https://github.com/user-attachments/assets/58db1a15-b5e5-4bb6-8b58-a71fc7a2af14)
@@ -141,7 +141,7 @@ Para este punto ya se asume que se realizo las configuraciones e intalaciones pa
 ![image](https://github.com/user-attachments/assets/57392aab-9cc8-404c-b916-172028eecc9d)
 
 
-### Creación y configuración del WebServer
+## Creación y configuración del WebServer
 
 1. En la instancia EC2 destinada para el servicio front-end.
 
@@ -204,88 +204,144 @@ Para este punto ya se asume que se realizo las configuraciones e intalaciones pa
    </VirtualHost>
    ```
 
-## Arquitectura
+# Funcionamiento 
 
+https://github.com/user-attachments/assets/2a1b1707-a849-4767-8e46-354f608b7be9
 
-### Diagrama de despliegue
+# Arquitectura
+
+## Diagrama de despliegue
 
 El siguiente diagrama de despliegue describe la estructura básica de la aplicación.
 
-![Deployment](https://github.com/user-attachments/assets/b6b85b9a-a19e-4865-b59b-927f113c37f3)
+![Deployment](https://github.com/user-attachments/assets/6369756e-0abc-4786-b759-fc78f0ba9c07)
 
-### Descripción del Diagrama de Despliegue
+###  **Nodos Principales**
+#### **WebClient**
+- **Descripción:** Representa el cliente web desde el cual los usuarios acceden a la aplicación.
+- **Componente:**
+  - **Browser** → El navegador utilizado para interactuar con la aplicación.
+- **Conexión:**
+  - Se comunica con el **Frontend** a través de **HTTPS (puerto 443)**.
 
-#### 1. **WebClient**
-   - **Puerto 8087**: Punto de entrada para las solicitudes HTTP desde el navegador.
+#### **Instancia EC2 con Frontend**
+- **Descripción:** Servidor donde se aloja el **Frontend** dentro de un **contenedor Docker**.
+- **Componentes:**
+  - **DockerContainer** → Contiene la aplicación del **Frontend**.
+- **Conexión:**
+  - Recibe solicitudes del **WebClient** por **HTTPS (puerto 443)**.
+  - Se comunica con el **Backend** a través de **HTTPS (puerto 443)**.
 
-#### 2. **EC2 INSTANCE (Aplicación en Contenedor Docker)**
-   - **FrontEnd**: Se encarga de la interfaz de usuario y la comunicación con el backend.
-   - **BackEnd**: Procesa las peticiones del frontend, maneja la lógica de negocio y se comunica con la base de datos.
+#### **Instancia EC2 con Backend**
+- **Descripción:** Servidor donde se aloja el **Backend** dentro de un **contenedor Docker**.
+- **Componentes:**
+  - **DockerContainer** → Contiene la aplicación del **Backend**.
+- **Conexión:**
+  - Recibe solicitudes del **Frontend** por **HTTPS (puerto 443)**.
+  - Se comunica con la base de datos **MySQL** a través del **puerto 3307**.
 
-#### 3. **EC2 INSTANCE (Base de Datos MySQL en Contenedor Docker)**
-   - **DockerContainer con MySQLDB**: Contenedor que aloja la base de datos MySQL para almacenamiento y consulta de datos.
-   - **Puerto 3307**: Comunicación entre el backend y la base de datos MySQL.
+#### **Instancia EC2 con MySQL**
+- **Descripción:** Servidor que aloja la base de datos **MySQL** dentro de un **contenedor Docker**.
+- **Componentes:**
+  - **DockerContainer with MySqlDB** → Contenedor con el servicio de **MySQL**.
+- **Conexión:**
+  - Recibe solicitudes del **Backend** a través del **puerto 3307**.
 
 ---
 
-### **Flujo de la Aplicación**
-1. El **navegador** del usuario (WebClient) envía solicitudes HTTP al backend a través del puerto **8087**.
-2. El **FrontEnd** procesa la solicitud y, si es necesario, la envía al **BackEnd** dentro de la instancia EC2.
-3. El **BackEnd** maneja la lógica de negocio y, si requiere acceso a datos, consulta la base de datos **MySQL** a través del puerto **3307**.
-4. La base de datos MySQL devuelve la información solicitada al **BackEnd**, que la procesa y envía una respuesta al **FrontEnd**.
-5. El **FrontEnd** actualiza la interfaz del usuario con la respuesta obtenida.
+## **Relaciones y Conexiones**
+- El **WebClient (Browser)** se comunica con el **Frontend** en la **instancia EC2** mediante **HTTPS (puerto 443)**.
+- El **Frontend** dentro de un **contenedor Docker** se comunica con el **Backend** en otra **instancia EC2** a través de **HTTPS (puerto 443)**.
+- El **Backend** dentro de un **contenedor Docker** interactúa con la base de datos **MySQL** en otra **instancia EC2** a través del **puerto 3307**.
 
 ---
 
 
-### Diagrama de componentes.
+## Diagrama de componentes.
 El siguiente diagrama de despliegue describe la estructura básica de la aplicación. Utilizando el patron MVC.
 
 ![Component](https://github.com/user-attachments/assets/6816960c-15e7-4796-b67a-998d52b7f844)
 
+### **Componentes Principales**
+#### **Cliente (Browser)**
+- **Descripción:** Representa el navegador web que interactúa con la aplicación.
+- **Conexión:** Se comunica con el **Frontend** mediante HTTPS en el puerto **443**.
 
-### 1. **WebClient**
-   - **Browser**: Punto de entrada de la aplicación, donde los usuarios interactúan con la interfaz.
-   - **Spring**: Enlace entre el navegador y la aplicación, que maneja las solicitudes HTTP.
+### **Frontend**
+- **Descripción:** Es la capa de presentación de la aplicación.
+- **Componentes:**
+  - **Html** → Representa la estructura de la interfaz de usuario.
+  - **Js** → Representa los scripts y lógica del lado del cliente.
+- **Conexión:** Se comunica con el navegador y con el **Backend** mediante HTTPS en el puerto **443**.
 
-### 2. **App**
-   - Contiene los componentes del **FrontEnd** y **BackEnd**.
+###  **Backend**
+- **Descripción:** Es la capa lógica de negocio y de servicios.
+- **Componentes:**
+  - **Model** → Define la estructura de datos utilizada en la aplicación.
+  - **Service** → Contiene la lógica de negocio.
+  - **Controller** → Gestiona las solicitudes del cliente y envía respuestas.
+  - **Repository** → Maneja la persistencia de datos y se comunica con la base de datos.
+- **Conexión:** Se comunica con el **Frontend** y la base de datos.
 
-#### **FrontEnd**
-   - **Html**: Archivos HTML que estructuran la interfaz de usuario.
-   - **Js**: Archivos JavaScript que proporcionan interactividad y comunicación con el backend.
-
-#### #**BackEnd**
-   - **Model**: Define la estructura de datos utilizada en la aplicación.
-   - **Service**: Implementa la lógica de negocio y orquesta la interacción con los repositorios.
-   - **Controller**: Gestiona las solicitudes HTTP y delega el procesamiento a los servicios.
-   - **Repository**: Componente que interactúa con la base de datos.
-   - **JPARepository**: Implementación de acceso a datos que utiliza JPA para comunicarse con la base de datos.
-
-### 3. **Base de Datos**
-   - **MySqlDb**: Sistema de almacenamiento de datos utilizado por la aplicación.
-
----
-
-## **Flujo de la Aplicación**
-1. El **navegador** envía solicitudes a través de **Spring** al backend.
-2. El **Controller** recibe la solicitud y la pasa a los **Services**.
-3. Los **Services** interactúan con el **Repository** para acceder a los datos.
-4. El **Repository** utiliza **JPARepository** para realizar consultas en la base de datos **MySqlDb**.
-5. Los datos recuperados se devuelven al **Controller**, que genera una respuesta para el **FrontEnd**.
-6. El **FrontEnd** muestra los datos en la interfaz utilizando **Html** y **Js**.
+### **Base de Datos (MySQL)**
+- **Descripción:** Almacena los datos de la aplicación.
+- **Conexión:** Se comunica con el **JPARepository** en el backend para la gestión de datos.
 
 ---
 
+##  **Relaciones y Conexiones**
+- El **Browser** accede al **Frontend** mediante **HTTPS (443)**.
+- El **Frontend** se comunica con el **Backend** a través de **HTTPS (443)**.
+- El **Backend** se estructura en capas:
+  - **Controller** recibe las solicitudes del **Frontend**.
+  - **Service** maneja la lógica de negocio.
+  - **Repository** gestiona el acceso a datos.
+  - **JPARepository** interactúa con **MySQL** para la persistencia de datos.
 
-### Funcionamiento.
+---
 
-
-
-https://github.com/user-attachments/assets/36d71a5a-f8b8-492a-9741-48147fdb710c
-
-
-
+## Distribución de clases
+```
+📂 src
+├── 📂 main
+│   ├── 📂 java/edu/escuelaing/arep/taller6
+│   │   ├── 📂 controller
+│   │   │   ├── 📂 impl
+│   │   │   │   ├── 📄 PropertyListingControllerImpl.java
+│   │   │   │   ├── 📄 UserControllerImpl.java
+│   │   │   ├── 📂 interfaces
+│   │   │   │   ├── 📄 PropertyListingController.java
+│   │   │   │   ├── 📄 UserController.java
+│   │   ├── 📂 exception
+│   │   │   ├── 📄 PropertyListingException.java
+│   │   │   ├── 📄 UserException.java
+│   │   ├── 📂 model
+│   │   │   ├── 📄 Property.java
+│   │   │   ├── 📄 User.java
+│   │   ├── 📂 repository
+│   │   │   ├── 📄 PropertyListingRepository.java
+│   │   │   ├── 📄 UserRepository.java
+│   │   ├── 📂 services
+│   │   │   ├── 📂 impl
+│   │   │   │   ├── 📄 PropertyListingServicesImpl.java
+│   │   │   │   ├── 📄 UserServiceImpl.java
+│   │   │   ├── 📂 interfaces
+│   │   │   │   ├── 📄 PropertyListingServices.java
+│   │   │   │   ├── 📄 UserServices.java
+│   │   ├── 📄 Taller6.java
+│   ├── 📂 resources
+│   │   ├── 📂 keystore
+│   │   │   ├── 📄 ecikeystore.p12
+│   │   ├── 📄 application.properties
+├── 📂 test
+│   ├── 📂 java/edu/escuelaing/arep/taller6
+│   │   ├── 📂 controller
+│   │   │   ├── 📄 PropertyListingControllerTest.java
+│   │   │   ├── 📄 UserControllerTest.java
+│   │   ├── 📂 services
+│   │   │   ├── 📄 PropertyListingServiceTest.java
+│   │   │   ├── 📄 UserServicesTest.java
+```
 
 # Tecnologías Usadas en Pruebas
 - **JUnit Jupiter 5:** Para pruebas unitarias y parametrizadas.
@@ -294,15 +350,13 @@ https://github.com/user-attachments/assets/36d71a5a-f8b8-492a-9741-48147fdb710c
 
 - **Resultado de las pruebas**
 
-Para correr las pruebas automatizadas utilize el comando **IMPORTANTE: Debe configurar las variables de entorno necesarias para realizar la conexión a la DB, de lo contrario habrán pruebas que fallen**.
-
+Para correr las pruebas automatizadas utilize el comando:
 
 ```bash
    mvn clean test
 ```
 
-![image](https://github.com/user-attachments/assets/10d04c55-0ac5-447e-ad60-61aa2384a98f)
-
+![image](https://github.com/user-attachments/assets/6e8ad07e-10b2-47d8-8ce4-1c7b0ab073c9)
 
 
 ## Construido con.
@@ -312,6 +366,9 @@ Para correr las pruebas automatizadas utilize el comando **IMPORTANTE: Debe conf
 ## Autores
 
 - **Milton Andres Gutierrez Lopez** - *Initial work* - [MiltonGutierrez](https://github.com/MiltonGutierrez)
+
+## Agradecimientos 
+- **Juan David Contreras Becerra** - Se toma parte de la guáa de generación de cerficados TSL [Repositorio](https://github.com/jcontreras2693/AREP-Lab6)
 
 ## Licencia
 
