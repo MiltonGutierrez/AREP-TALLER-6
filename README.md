@@ -17,6 +17,7 @@ El taller se centra en diseñar y desplegar una aplicación segura y escalable u
 - Acceso a una terminal.
 - Cuenta con creditos en AWS.
 - Tener una conexion a una DB MySql ya configurada (preferiblemente en una instancia EC2)
+- Abrir puertos necesarios para las instancias EC2 (443, 22, y demás)
 
 ### Instalando
 
@@ -53,6 +54,21 @@ Se pushea la imagen:
 ![image](https://github.com/user-attachments/assets/5b954aab-ea19-42ae-bd4e-014ccd74e908)
 
 ### En la instancia EC2 designada para el back
+
+Creamos el .env donde se almacenaran los siguientes valores: DB_URL, DB_USERNAME, DB_PASSWORD y KEYSTORE_PASSWORD
+   ```bash
+   touch .env
+   nano .env
+   ```
+Creamos un contenedor docker con el siguiente comando: 
+   ```bash
+   docker run --env-file .env -d -p 443:443 --name arep-6-back unandresmasxd/arep-6-back
+   ```
+![image](https://github.com/user-attachments/assets/a458f425-018d-46f9-9128-bdaff863f96f)
+
+Para probar su correcto funcionamiento (Certificado válido)
+![image](https://github.com/user-attachments/assets/57392aab-9cc8-404c-b916-172028eecc9d)
+
 
 
 
