@@ -76,11 +76,86 @@ Primero se crean las instancias EC2 para el back y el front, con las ips publica
    sudo yum install httpd -y
    ```
    ```bash
+   sudo systemctl enable httpd
+   ```
+    ```bash
+   sudo yum install certbot python3-certbot-apache -y
+   ```
+3. Se crea el certificado (con el dominio que apunta a la instancia para el front).
+   ```bash
+   sudo certbot certonly --standalone -d tudominio.duckdns.org
+   ```
+4. Una vez creado se debe modificar el archvio de configuración que apunta a las llaver y certificados SSL de Apache
+
+```bash
+   sudo nano /etc/httpd/conf.d/ssl.conf
+```
+5. Se cambia a la ruta de las llaves y certificados generados como se muestra en la imagen:
+
+![image](https://github.com/user-attachments/assets/6985fb29-564f-4610-bc31-178de2e19414)
+
+
+### Creacion de imagenes de docker
+
+1. Para poder crear una imagen Docker se ejecuta el siguiente comando:
+   ```bash
+   docker build --tag arep6 .
+   ```
+![image](https://github.com/user-attachments/assets/894c754a-b2e2-4f88-835f-d3e80a65047b)
+
+2. Luego se crea referencia a la imagen creada para poder subirla a docker hub.
+   ```bash
+   docker build --tag arep6 nombre_usuario_docker/arep-6-back
+   ```
+![image](https://github.com/user-attachments/assets/11ca9a94-6b9e-440b-8e59-41809eb6fa33)
+
+3. Se inicia sesión.
+   ```bash
+   docker login
+   ```
+4. Se pushea la imagen:
+   ```bash
+   docker push nombre_usuario_docker/arep-6-back:latest
+   ```
+![image](https://github.com/user-attachments/assets/5b954aab-ea19-42ae-bd4e-014ccd74e908)
+
+### En la instancia EC2 con la DB
+Para este punto ya se asume que se realizo las configuraciones e intalaciones para la base de datos. (En nuestro caso de mysql) Por lo que solo es necesario iniciar el contenedor Docker con la base de datos.
+
+![image](https://github.com/user-attachments/assets/58db1a15-b5e5-4bb6-8b58-a71fc7a2af14)
+
+### En la instancia EC2 designada para el back
+
+1. Creamos el .env donde se almacenaran los siguientes valores: DB_URL, DB_USERNAME, DB_PASSWORD y KEYSTORE_PASSWORD
+   ```bash
+   touch .env
+   nano .env
+   ```
+2. Creamos un contenedor docker con el siguiente comando: 
+   ```bash
+   docker run --env-file .env -d -p 443:443 --name arep-6-back unandresmasxd/arep-6-back
+   ```
+![image](https://github.com/user-attachments/assets/a458f425-018d-46f9-9128-bdaff863f96f)
+
+3. Para probar su correcto funcionamiento (Certificado válido)
+![image](https://github.com/user-attachments/assets/57392aab-9cc8-404c-b916-172028eecc9d)
+
+
+### Creación y configuración del WebServer
+
+1. En la instancia EC2 destinada para el servicio front-end.
+
+2. Se intalan las dependencias necesarias: 
+   ```bash
+   sudo yum install httpd -y
+   ```
+   ```bash
    sudo systemctl start httpd
    ```
    ```bash
    sudo systemctl enable httpd
    ```
+
 3. Se procede a mover los archivos estaticos (HTML-JS-CSS) a la instancia EC2.
    ```bash
    cd /ruta/archivos_estaticos
@@ -98,72 +173,36 @@ Primero se crean las instancias EC2 para el back y el front, con las ips publica
    sudo yum install mod_ssl -y
    sudo systemctl restart httpd
    ```
-
-
-Ya con las llaves privadas es suficiente para poder realizar la configuración.
-
-### Creacion de imagenes de docker
-
-Para poder crear una imagen Docker se ejecuta el siguiente comando:
+6. Se crea el host virtual
    ```bash
-   docker build --tag arep6 .
-   ```
-![image](https://github.com/user-attachments/assets/894c754a-b2e2-4f88-835f-d3e80a65047b)
-
-Luego se crea referencia a la imagen creada para poder subirla a docker hub.
-   ```bash
-   docker build --tag arep6 nombre_usuario_docker/arep-6-back
-   ```
-![image](https://github.com/user-attachments/assets/11ca9a94-6b9e-440b-8e59-41809eb6fa33)
-
-Se inicia sesión.
-   ```bash
-   docker login
-   ```
-Se pushea la imagen:
-   ```bash
-   docker push nombre_usuario_docker/arep-6-back:latest
-   ```
-![image](https://github.com/user-attachments/assets/5b954aab-ea19-42ae-bd4e-014ccd74e908)
-
-### En la instancia EC2 con la DB
-Para este punto ya se asume que se realizo las configuraciones e intalaciones para la base de datos. (En nuestro caso de mysql) Por lo que solo es necesario iniciar el contenedor Docker con la base de datos.
-
-![image](https://github.com/user-attachments/assets/58db1a15-b5e5-4bb6-8b58-a71fc7a2af14)
-
-### En la instancia EC2 designada para el back
-
-Creamos el .env donde se almacenaran los siguientes valores: DB_URL, DB_USERNAME, DB_PASSWORD y KEYSTORE_PASSWORD
-   ```bash
-   touch .env
-   nano .env
-   ```
-Creamos un contenedor docker con el siguiente comando: 
-   ```bash
-   docker run --env-file .env -d -p 443:443 --name arep-6-back unandresmasxd/arep-6-back
-   ```
-![image](https://github.com/user-attachments/assets/a458f425-018d-46f9-9128-bdaff863f96f)
-
-Para probar su correcto funcionamiento (Certificado válido)
-![image](https://github.com/user-attachments/assets/57392aab-9cc8-404c-b916-172028eecc9d)
-
-
-### Creación y configuración del WebServer
-
-En la instancia EC2 destinada para el servicio front-end.
-
-Se intalan las dependencias necesarias: 
-   ```bash
-   sudo yum install httpd -y
-   ```
-   ```bash
-   sudo systemctl start httpd
-   ```
-   ```bash
-   sudo systemctl enable httpd
+   sudo nano /etc/httpd/conf.d/tu-dominio.conf
    ```
 
-
+   ```yml
+   <VirtualHost *:443>
+       ServerName arep-taller-6-front.duckdns.org
+       ServerAlias www.arep-taller-6-front.duckdns.org
+       DocumentRoot /var/www/html
+   
+       SSLEngine on
+       SSLCertificateFile /etc/letsencrypt/live/arep-taller-6-front.duckdns.org/fullchain.pem
+       SSLCertificateKeyFile /etc/letsencrypt/live/arep-taller-6-front.duckdns.org/privkey.pem
+   
+       DirectoryIndex index.html
+   
+       Redirect permanent / https://arep-taller-6-front.duckdns.org
+   
+       <Directory /var/www/html>
+           AllowOverride All
+           Require all granted
+       </Directory>
+   
+       RewriteEngine on
+       RewriteCond %{SERVER_NAME} =arep-taller-6-front.duckdns.org [OR]
+       RewriteCond %{SERVER_NAME} =www.arep-taller-6-front.duckdns.org
+       RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
+   </VirtualHost>
+   ```
 
 ## Arquitectura
 
