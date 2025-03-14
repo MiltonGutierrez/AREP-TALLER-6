@@ -1,6 +1,6 @@
 const apiClient = (() => {
-    const url = "/api/";
-    const urlUser = "/user";
+    const url = "https://arep-taller-6-back.duckdns.org/api/";
+    const urlUser = "https://arep-taller-6-back.duckdns.org/user";
 
     // GET
     const getProperties = async () => {
